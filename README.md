@@ -16,6 +16,10 @@ node build.js
 docker-compose up -d
 ```
 
+## Preview
+
+![](./preview.png)
+
 ## RELATIVE
 
 - [NGINX](https://www.nginx.com/)
