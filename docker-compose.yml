@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+
+  nginx:
+    image: nginx:1.15.7-alpine
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.frontend.rule=Host:demo.soulteary.com,demo.soulteary.io"
+      - "traefik.frontend.entryPoints=https,http"
+      - "traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Origin:*"
+    networks:
+      - traefik
+    expose:
+      - 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./mime.types:/etc/nginx/mime.types
+      - ./public:/app/public
+      - ./autoindex:/app/.autoindex
+    extra_hosts:
+      - "soulteary.com:127.0.0.1"
+      - "www.soulteary.com:127.0.0.1"
+
+networks:
+  traefik:
+    external: true
