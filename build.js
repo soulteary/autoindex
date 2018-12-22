@@ -1,9 +1,14 @@
 const {readdirSync, readFileSync, writeFileSync} = require('fs');
 const {join} = require('path');
+const basePath = __dirname;
 
-const templates = readdirSync('./src/templates');
-const styles = readdirSync('./src/styles');
-const scripts = readdirSync('./src/scripts');
+const tplPath = join(basePath, 'src/templates');
+const stylePath = join(basePath, 'src/styles');
+const scriptPath = join(basePath, 'src/scripts');
+
+const templateFiles = readdirSync(tplPath);
+const styleFiles = readdirSync(join(basePath, 'src/styles'));
+const scriptFiles = readdirSync(join(basePath, 'src/scripts'));
 
 function minifyStyle(content) {
   return content.
@@ -18,19 +23,19 @@ function minifyScript(content) {
   return content.replace(/^\s*|[\r|\n]/g, '');
 }
 
-templates.forEach((templateName) => {
-  const filePath = join('./src/templates', templateName);
+templateFiles.forEach((templateName) => {
+  const filePath = join(tplPath, templateName);
   let content = readFileSync(filePath, 'utf-8');
 
-  styles.forEach((styleFile) => {
-    const filePath = join('./src/styles', styleFile);
+  styleFiles.forEach((styleFile) => {
+    const filePath = join(stylePath, styleFile);
     const styleContent = readFileSync(filePath, 'utf-8');
     content = content.replace('${SITE_STYLE}', minifyStyle(styleContent));
   });
 
   let scriptContents = [];
-  scripts.sort((a, b) => a - b).forEach((scriptFile) => {
-    const filePath = join('./src/scripts', scriptFile);
+  scriptFiles.sort((a, b) => a - b).forEach((scriptFile) => {
+    const filePath = join(scriptPath, scriptFile);
     const scriptContent = readFileSync(filePath, 'utf-8');
     const id = Number(scriptFile.match(/^\d+/)[0]);
     switch (id) {
