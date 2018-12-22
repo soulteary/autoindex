@@ -1,4 +1,4 @@
 .idea/
-autoindex.iml
+*.iml
 public/
 autoindex/*.html

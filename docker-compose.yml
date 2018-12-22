@@ -8,7 +8,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.port=80"
-      - "traefik.frontend.rule=Host:demo.soulteary.com,demo.soulteary.io"
+      - "traefik.frontend.rule=Host:demo.soulteary.com"
       - "traefik.frontend.entryPoints=https,http"
       - "traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Origin:*"
     networks:
@@ -21,8 +21,7 @@ services:
       - ./public:/app/public
       - ./autoindex:/app/.autoindex
     extra_hosts:
-      - "soulteary.com:127.0.0.1"
-      - "www.soulteary.com:127.0.0.1"
+      - "demo.soulteary.com:127.0.0.1"
 
 networks:
   traefik:
