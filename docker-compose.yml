@@ -3,25 +3,32 @@ version: '3'
 services:
 
   nginx:
-    image: nginx:1.15.7-alpine
+    image: ${NGX_IMAGE}
     restart: always
+    expose:
+      - 80
+    networks:
+      - traefik
     labels:
       - "traefik.enable=true"
       - "traefik.port=80"
-      - "traefik.frontend.rule=Host:demo.soulteary.com"
-      - "traefik.frontend.entryPoints=https,http"
+      - "traefik.frontend.rule=Host:${NGX_DOMAIN}"
+      - "traefik.frontend.entryPoints=http,https"
       - "traefik.frontend.headers.customResponseHeaders=Access-Control-Allow-Origin:*"
-    networks:
-      - traefik
-    expose:
-      - 80
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./mime.types:/etc/nginx/mime.types
-      - ./public:/app/public
-      - ./autoindex:/app/.autoindex
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./mime.types:/etc/nginx/mime.types:ro
+      - ./autoindex:/usr/share/nginx/.autoindex:ro
+      - ./favicon.png:/usr/share/nginx/.res/favicon.png:ro
+      - ./public:/usr/share/nginx/html
     extra_hosts:
-      - "demo.soulteary.com:127.0.0.1"
+      - "${NGX_DOMAIN}:127.0.0.1"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider --proxy off localhost/health-check || exit 1"]
+    logging:
+        driver: "json-file"
+        options:
+            max-size: "10m"
 
 networks:
   traefik:
